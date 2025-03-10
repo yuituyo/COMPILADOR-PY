@@ -11,7 +11,7 @@ modificado = leido.split()
 
 
 for x in modificado:
-    print(modificado)
+    print(modificado.pop())
 
 
 
