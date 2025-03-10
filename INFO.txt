@@ -1,0 +1,39 @@
+Ejemplo del analizador sintactico
+https://www.codeproject.com/Articles/841749/Syntax-analysis-an-example
+
+
+
+GRAMATICA 
+{
+int, float, id, corder, corizq, parder, parizq, puntocoma , while, if, condicion, impresion, lectura, llaveder, llaveizq, igual, oparit, string
+
+ 
+INT - int id igual (VALOR) | (oparit VALOR) (oparit VALOR) puntocoma
+
+FLOAT - float id igual (VALOR) | (oparit VALOR) (oparit VALOR)  puntocoma  
+
+STRING- string id igual textos puntocoma
+
+TEXTOS - comilla texto comilla
+
+IMPRESION -impresion parizq (numeros|textos) parder puntocoma
+
+LECTURA - lectura parizq texto parder
+
+CICLO  - while parizq comparacion parder llaveder inicial llaveizq
+
+PREGUNTA - if parizq oplogica parder llaveizq inicial llaveder
+
+COMPARACION -  VALOR oplogica VALOR 
+
+VALOR - numero|id
+
+
+inicial - int, float, strings, impresion , lecturas 
+
+}
+
+Requesitos
+{
+while, if, oparit, declaracion, impresion
+}
