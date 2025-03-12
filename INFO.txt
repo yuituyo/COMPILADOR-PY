@@ -8,9 +8,9 @@ GRAMATICA
 int, float, id, corder, corizq, parder, parizq, puntocoma , while, if, condicion, impresion, lectura, llaveder, llaveizq, igual, oparit, string
 
  
-INT - int id igual (VALOR) | (oparit VALOR) (oparit VALOR) puntocoma
+INT - int id igual digito | (oparit digito) (oparit digito) puntocoma
 
-FLOAT - float id igual (VALOR) | (oparit VALOR) (oparit VALOR)  puntocoma  
+FLOAT - float id igual (digito) | (oparit VALOR) (oparit digito)  puntocoma  
 
 STRING- string id igual textos puntocoma
 
