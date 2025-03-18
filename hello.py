@@ -193,51 +193,40 @@ patronPreguntaIzq = [')','{']
 
 def Sintactico(numero):#RECURSIVO
     global pasos
-
-    match numero:
-        case 1:   
-            match tablita[pasos].lexema:
-                case "int":
-                    pasos += 1
-                    Sintactico(2)
-                case "float":
-                    pasos += 1
-                    Sintactico(3)
-                case "string":
-                    pasos += 1
-                    Sintactico(4)
-                case "print":
-                    pasos += 1
-                    Sintactico(5)
-                case "read":
-                    pasos += 1
-                    Sintactico(6)
-                case "while":
-                    pasos += 1
-                    Sintactico(7)
-                case "if":
-                    pasos += 1
-                    Sintactico(8) 
-              
-        case 2:#int
-                for i in range(len(INT)):#Es int?
-                    if(tablita[pasos].tipo == INT[i]):
+    if(pasos < len((tablita))-1):
+        match numero:
+            case 1:   
+                match tablita[pasos].lexema:
+                    case "int":
                         pasos += 1
-                        continue
-                    else:
-                        ErrorSintactico(INT[i],tablita[pasos].lexema)
-                        
-                for i in range(len(valoresNumericos)):#Es valor numerico valido?
-
-                    if(tablita[pasos].tipo == valoresNumericos[i]):
+                        Sintactico(2)
+                    case "float":
                         pasos += 1
-                        break
-                    if(i< len(valoresNumericos)): continue
-                    
-                    ErrorSintactico("Valor numerico (Numero o ID)",tablita[pasos].lexema)
+                        Sintactico(3)
+                    case "string":
+                        pasos += 1
+                        Sintactico(4)
+                    case "print":
+                        pasos += 1
+                        Sintactico(5)
+                    case "read":
+                        pasos += 1
+                        Sintactico(6)
+                    case "while":
+                        pasos += 1
+                        Sintactico(7)
+                    case "if":
+                        pasos += 1
+                        Sintactico(8) 
                 
-                if(tablita[pasos].tipo == OpM):
-                    pasos += 1
+            case 2:#int
+                    for i in range(len(INT)):#Es int?
+                        if(tablita[pasos].tipo == INT[i]):
+                            pasos += 1
+                            continue
+                        else:
+                            ErrorSintactico(INT[i],tablita[pasos].lexema)
+                            
                     for i in range(len(valoresNumericos)):#Es valor numerico valido?
 
                         if(tablita[pasos].tipo == valoresNumericos[i]):
@@ -257,41 +246,41 @@ def Sintactico(numero):#RECURSIVO
                             if(i< len(valoresNumericos)): continue
                             
                             ErrorSintactico("Valor numerico (Numero o ID)",tablita[pasos].lexema)
-                        if(tablita[pasos].tipo == ";"):
+                        
+                        if(tablita[pasos].tipo == OpM):
+                            pasos += 1
+                            for i in range(len(valoresNumericos)):#Es valor numerico valido?
+
+                                if(tablita[pasos].tipo == valoresNumericos[i]):
+                                    pasos += 1
+                                    break
+                                if(i< len(valoresNumericos)): continue
+                                
+                                ErrorSintactico("Valor numerico (Numero o ID)",tablita[pasos].lexema)
+                            if(tablita[pasos].tipo == ";"):
+                                pasos += 1
+                                Sintactico(1)
+                            else:
+                                ErrorSintactico(";",tablita[pasos].lexema)
+                        elif(tablita[pasos].tipo == ";"):
                             pasos += 1
                             Sintactico(1)
                         else:
-                            ErrorSintactico(";",tablita[pasos].lexema)
+                            ErrorSintactico(";",tablita[pasos].lexema)                                                                           
                     elif(tablita[pasos].tipo == ";"):
                         pasos += 1
                         Sintactico(1)
                     else:
-                        ErrorSintactico(";",tablita[pasos].lexema)                                                                           
-                elif(tablita[pasos].tipo == ";"):
-                    pasos += 1
-                    Sintactico(1)
-                else:
-                    ErrorSintactico(";",tablita[pasos].lexema)
-        
-        case 3:#float
-                for i in range(len(INT)):#Es float?
-                    if(tablita[pasos].tipo == INT[i]):
-                        pasos += 1
-                        continue
-                    else:
-                        ErrorSintactico(INT[i],tablita[pasos].lexema)
-                        
-                for i in range(len(valoresdecimales)):#Es valor numerico valido?
-
-                    if(tablita[pasos].tipo == valoresdecimales[i]):
-                        pasos += 1
-                        break
-                    if(i< len(valoresdecimales)): continue
-                    
-                    ErrorSintactico("Valor numerico (Numero o ID)",tablita[pasos].lexema)
-                
-                if(tablita[pasos].tipo == OpM):
-                    pasos += 1
+                        ErrorSintactico(";",tablita[pasos].lexema)
+            
+            case 3:#float
+                    for i in range(len(INT)):#Es float?
+                        if(tablita[pasos].tipo == INT[i]):
+                            pasos += 1
+                            continue
+                        else:
+                            ErrorSintactico(INT[i],tablita[pasos].lexema)
+                            
                     for i in range(len(valoresdecimales)):#Es valor numerico valido?
 
                         if(tablita[pasos].tipo == valoresdecimales[i]):
@@ -311,130 +300,139 @@ def Sintactico(numero):#RECURSIVO
                             if(i< len(valoresdecimales)): continue
                             
                             ErrorSintactico("Valor numerico (Numero o ID)",tablita[pasos].lexema)
-                        if(tablita[pasos].tipo == ";"):
-                            
-                            Sintactico(1,pasos+1)
+                        
+                        if(tablita[pasos].tipo == OpM):
+                            pasos += 1
+                            for i in range(len(valoresdecimales)):#Es valor numerico valido?
+
+                                if(tablita[pasos].tipo == valoresdecimales[i]):
+                                    pasos += 1
+                                    break
+                                if(i< len(valoresdecimales)): continue
+                                
+                                ErrorSintactico("Valor numerico (Numero o ID)",tablita[pasos].lexema)
+                            if(tablita[pasos].tipo == ";"):
+                                
+                                Sintactico(1,pasos+1)
+                            else:
+                                ErrorSintactico(";",tablita[pasos].lexema)
+                        elif(tablita[pasos].tipo == ";"):
+                            pasos += 1
+                            Sintactico(1)
                         else:
-                            ErrorSintactico(";",tablita[pasos].lexema)
+                            ErrorSintactico(";",tablita[pasos].lexema)                                                                           
                     elif(tablita[pasos].tipo == ";"):
                         pasos += 1
                         Sintactico(1)
                     else:
-                        ErrorSintactico(";",tablita[pasos].lexema)                                                                           
-                elif(tablita[pasos].tipo == ";"):
+                        ErrorSintactico(";",tablita[pasos].lexema)         
+
+            case 7:#while
+                for i in range(len(patronWhile)):#Es float?
+                        if(tablita[pasos].tipo == patronWhile[i]):
+                            pasos += 1
+                            continue
+                        else:
+                            ErrorSintactico(INT[i],tablita[pasos].lexema)
+                
+                Sintactico(1)
+                
+                if(tablita[pasos].tipo == '}'):
                     pasos += 1
                     Sintactico(1)
                 else:
-                    ErrorSintactico(";",tablita[pasos].lexema)         
-
-        case 7:#while
-            for i in range(len(patronWhile)):#Es float?
-                    if(tablita[pasos].tipo == patronWhile[i]):
-                        pasos += 1
-                        continue
-                    else:
-                        ErrorSintactico(INT[i],tablita[pasos].lexema)
-            
-            Sintactico(1)
-            
-            if(tablita[pasos].tipo == '}'):
-                pasos += 1
+                    ErrorSintactico("}",tablita[pasos].lexema)
+                
+            case 4:#string
+                for i in range(len(patronString)):#Es float?
+                        if(tablita[pasos].tipo == patronString[i]):
+                            pasos += 1
+                            continue
+                        else:
+                            ErrorSintactico(INT[i],tablita[pasos].lexema)
                 Sintactico(1)
-            else:
-                ErrorSintactico("}",tablita[pasos].lexema)
-            
-        case 4:#string
-            for i in range(len(patronString)):#Es float?
-                    if(tablita[pasos].tipo == patronString[i]):
+
+            case 5:#print
+                if (tablita[pasos].tipo == patronImprimirDer[0]):
+                    pasos += 1
+                else:
+                    ErrorSintactico("(",tablita[pasos].lexema)
+                
+                for i in range(len(Imprimiples)):
+                    if(tablita[pasos].tipo == Imprimiples[i]):
+                        pasos += 1
+                        break
+                    
+                    if(i< len(Imprimiples)): continue
+                    ErrorSintactico(Imprimiples[i],tablita[pasos].lexema)
+                
+                for i in range(len(patronImprimirIzq)):
+                    if(tablita[pasos].tipo == patronImprimirIzq[i]):
                         pasos += 1
                         continue
                     else:
-                        ErrorSintactico(INT[i],tablita[pasos].lexema)
-            Sintactico(1)
+                        ErrorSintactico(patronImprimirIzq[i],tablita[pasos].lexema)
+                                    
+                Sintactico(1)
+                
+            case 6:#read
+                for i in range(len(patronLectura)):
+                    if(tablita[pasos].tipo == patronLectura[i]):
+                        pasos += 1
+                        continue
+                    else:
+                        ErrorSintactico(patronLectura[i],tablita[pasos].lexema)
 
-        case 5:#print
-            if (tablita[pasos].tipo == patronImprimirDer[0]):
-                pasos += 1
-            else:
-                ErrorSintactico("(",tablita[pasos].lexema)
-            
-            for i in range(len(Imprimiples)):
-                if(tablita[pasos].tipo == Imprimiples[i]):
+            case 8:#Pregunta
+                if(tablita[pasos].tipo == '('):
                     pasos += 1
-                    break
-                
-                if(i< len(Imprimiples)): continue
-                ErrorSintactico(Imprimiples[i],tablita[pasos].lexema)
-            
-            for i in range(len(patronImprimirIzq)):
-                if(tablita[pasos].tipo == patronImprimirIzq[i]):
-                    pasos += 1
-                    continue
                 else:
-                    ErrorSintactico(patronImprimirIzq[i],tablita[pasos].lexema)
-                                   
-            Sintactico(1)
-            
-        case 6:#read
-            for i in range(len(patronLectura)):
-                if(tablita[pasos].tipo == patronLectura[i]):
-                    pasos += 1
-                    continue
-                else:
-                    ErrorSintactico(patronLectura[i],tablita[pasos].lexema)
-
-        case 8:#Pregunta
-            if(tablita[pasos].tipo == '('):
-                pasos += 1
-            else:
-                ErrorSintactico('(',tablita[pasos].lexema)
-            
-            for i in range(len(valoresComparables)):
-                if(tablita[pasos].tipo == valoresComparables[i]):
-                    pasos += 1
-                    break
+                    ErrorSintactico('(',tablita[pasos].lexema)
                 
-                if(i< len(valoresComparables)): continue
-                ErrorSintactico(valoresComparables[i],tablita[pasos].lexema)
-                
-            if(tablita[pasos].tipo == OpL):
-                pasos += 1
-            else:
-                ErrorSintactico(OpL,tablita[pasos].lexema)
-        
-            for i in range(len(valoresComparables)):
+                for i in range(len(valoresComparables)):
                     if(tablita[pasos].tipo == valoresComparables[i]):
                         pasos += 1
                         break
                     
                     if(i< len(valoresComparables)): continue
                     ErrorSintactico(valoresComparables[i],tablita[pasos].lexema)
-        
-            for i in range(len(patronPreguntaIzq)):
-                if(tablita[pasos].tipo == patronPreguntaIzq[i]):
+                    
+                if(tablita[pasos].tipo == OpL):
                     pasos += 1
-                    continue
                 else:
-                    ErrorSintactico(patronPreguntaIzq[i],tablita[pasos].lexema)
+                    ErrorSintactico(OpL,tablita[pasos].lexema)
             
-            Sintactico(1)        
+                for i in range(len(valoresComparables)):
+                        if(tablita[pasos].tipo == valoresComparables[i]):
+                            pasos += 1
+                            break
+                        
+                        if(i< len(valoresComparables)): continue
+                        ErrorSintactico(valoresComparables[i],tablita[pasos].lexema)
             
-            if(tablita[pasos].tipo == '}'):
-                if(pasos == len(tablita)-1):
-                    return   
-                pasos += 1
-                Sintactico(1)
-            else:
-                ErrorSintactico("}",tablita[pasos].lexema)
-            
+                for i in range(len(patronPreguntaIzq)):
+                    if(tablita[pasos].tipo == patronPreguntaIzq[i]):
+                        pasos += 1
+                        continue
+                    else:
+                        ErrorSintactico(patronPreguntaIzq[i],tablita[pasos].lexema)
+                
+                Sintactico(1)        
+                
+                if(tablita[pasos].tipo == '}'):     
+                    pasos += 1
+                    Sintactico(1)
+                else:
+                    ErrorSintactico("}",tablita[pasos].lexema)
+                
             
 #--------------------------------------------------------------------------------------------------
                   
 Sintactico(1)          
                     
 #-------------------------------------------------------------------------------------------------- 
-              
-                    
+#Semantico                
+                   
 
                         
                 
