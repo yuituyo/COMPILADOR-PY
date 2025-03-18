@@ -7,18 +7,15 @@ GRAMATICA
 {
 int, float, id, corder, corizq, parder, parizq, puntocoma , while, if, condicion, impresion, lectura, llaveder, llaveizq, igual, oparit, string
 
- 
-INT - int id igual digito | (oparit digito) (oparit digito) puntocoma
+INT - int id igual (digito | (oparit digito) (oparit digito) puntocoma)
 
 FLOAT - float id igual (digito) | (oparit VALOR) (oparit digito)  puntocoma  
 
 STRING- string id igual textos puntocoma
 
-TEXTOS - comilla texto comilla
-
 IMPRESION -impresion parizq (numeros|textos) parder puntocoma
 
-LECTURA - lectura parizq texto parder
+LECTURA - lectura parizq  parder puntocoma
 
 CICLO  - while parizq comparacion parder llaveder inicial llaveizq
 
@@ -29,11 +26,6 @@ COMPARACION -  VALOR oplogica VALOR
 VALOR - numero|id
 
 
-inicial - int, float, strings, impresion , lecturas 
+inicial - int, float, strings, impresion , lecturas, while 
 
-}
-
-Requesitos
-{
-while, if, oparit, declaracion, impresion
 }
