@@ -29,3 +29,7 @@ VALOR - numero|id
 inicial - int, float, strings, impresion , lecturas, while 
 
 }
+
+
+Notacion postfija , infija , prefija
+https://runestone.academy/ns/books/published/pythoned/BasicDS/ExpresionesInfijasPrefijasYSufijas.html

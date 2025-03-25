@@ -49,16 +49,18 @@ Imprimiples = ["TXT","ID"]
 #Tabla de simbolos
 #--------------------------------------------------------------------------------------------------
 class Tabladesimbolos:
-    def __init__(self, pos ,tipo,lexema ):
+    def __init__(self, pos ,tipo,lexema, expresiones,arbol):
         self.pos = pos
         self.tipo = tipo
         self.lexema = lexema
+        self.expresiones = expresiones
+        self.arbol = arbol
 #--------------------------------------------------------------------------------------------------
 
 
 tablita = []
 for i in range(len(modificado)):
-    tablita.append(Tabladesimbolos(i,"",""))
+    tablita.append(Tabladesimbolos(i,"","",None))
 
 
 if(1):#-----------------------------------------------------------------------> Si lexiquea o no
@@ -163,12 +165,13 @@ if(1):#-----------------------------------------------------------------------> 
         
 #--------------------------------------------------------------------------------------------------
 #Imprimir la tablita
-if(0):
+def Imprimirtabla():
     for i in range(len(tablita)):
         print("----------")
         print(tablita[i].pos)
         print(tablita[i].tipo)
         print(tablita[i].lexema)
+        print(tablita[i].expresiones)
 
 #--------------------------------------------------------------------------------------------------
 #no Terminales
@@ -432,7 +435,31 @@ Sintactico(1)
                     
 #-------------------------------------------------------------------------------------------------- 
 #Semantico                
-                   
+   
+def AgregarExpresionesatabla():
+    valor = 0
+    for i in range(len(tablita)):
+        if(tablita[i].lexema == '=' and tablita[i-1].tipo == 'ID'):
+            valor = i+1
+            lista =[]
+            while(tablita[valor].lexema != ';'):
+                lista.append(tablita[valor].lexema)
+                valor += 1
+            tablita[i-1].expresiones = lista
+            continue
+        
+def ConstruirArbol():       
+    for i in range(len(tablita)):
+         if(tablita[i].expresiones != None):
+             pila = tablita[i].expresiones 
+             
+
+
+#-------------------------------------------------------------------------------------------------- 
+AgregarExpresionesatabla()  
+Imprimirtabla()             
+        
+                    
 
                         
                 
