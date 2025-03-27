@@ -55,6 +55,12 @@ class Tabladesimbolos:
         self.lexema = lexema
         self.expresiones = expresiones
         self.arbol = arbol
+        
+class Nodo:
+    def __init__(self, valor, izq, der):
+        self.valor = valor
+        self.izq = izq
+        self.der = der
 #--------------------------------------------------------------------------------------------------
 
 
@@ -448,11 +454,18 @@ def AgregarExpresionesatabla():
             tablita[i-1].expresiones = lista
             continue
         
-def ConstruirArbol():       
+def inpost():       
     for i in range(len(tablita)):
-         if(tablita[i].expresiones != None):
-             pila = tablita[i].expresiones 
+        if(tablita[i].expresiones != None):
+            pila = tablita[i].expresiones 
+            pilanueva = None
+            for i in pila :
+                if (pila[i] == "+" or pila[i] == '-' or pila[i] == '*' or pila[i] == '/' or pila[i] =='^'):
+                    pilanueva.append(pila[i])
+                    
              
+                        
+                     
 
 
 #-------------------------------------------------------------------------------------------------- 

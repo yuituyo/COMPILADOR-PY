@@ -33,3 +33,11 @@ inicial - int, float, strings, impresion , lecturas, while
 
 Notacion postfija , infija , prefija
 https://runestone.academy/ns/books/published/pythoned/BasicDS/ExpresionesInfijasPrefijasYSufijas.html
+
+la notacion que se va a utilizar debido a que no utiliza o nescesita parentesis es la notacion polaca(prefija)
+
+
+convertir de notacion:
+ infija a prefija
+ infija a subfija
+                    
