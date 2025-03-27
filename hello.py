@@ -66,7 +66,7 @@ class Nodo:
 
 tablita = []
 for i in range(len(modificado)):
-    tablita.append(Tabladesimbolos(i,"","",None))
+    tablita.append(Tabladesimbolos(i,"","",None,None))
 
 
 if(1):#-----------------------------------------------------------------------> Si lexiquea o no
@@ -440,7 +440,7 @@ def Sintactico(numero):#RECURSIVO
 Sintactico(1)          
                     
 #-------------------------------------------------------------------------------------------------- 
-#Semantico                
+#Semantico           
    
 def AgregarExpresionesatabla():
     valor = 0
@@ -454,23 +454,107 @@ def AgregarExpresionesatabla():
             tablita[i-1].expresiones = lista
             continue
         
-def inpost():       
+# Función para determinar la precedencia de los operadores
+def precedencia(op):
+    if op == '+' or op == '-':
+        return 1
+    if op == '*' or op == '/':
+        return 2
+    if op == '^':
+        return 3
+    return 0
+
+# Función para invertir una cadena
+def invertir(cadena):
+    return cadena[::-1]
+
+# Función para convertir infijo a postfijo
+def infijo_a_postfijo(expresion):
+    pila = []  # Pila para los operadores
+    salida = []  # Lista para la expresión postfija
+
+    for caracter in expresion:
+        # Si el caracter es un operando (letra o número), lo agregamos directamente a la salida
+        if caracter.isalnum():
+            salida.append(caracter)
+
+        # Si el caracter es un paréntesis izquierdo, lo apilamos
+        elif caracter == '(':
+            pila.append(caracter)
+
+        # Si el caracter es un paréntesis derecho, desapilamos hasta encontrar el paréntesis izquierdo
+        elif caracter == ')':
+            while pila and pila[-1] != '(':
+                salida.append(pila.pop())
+            pila.pop()  # Desapilamos el paréntesis izquierdo
+
+        # Si el caracter es un operador
+        else:
+            while pila and precedencia(pila[-1]) >= precedencia(caracter):
+                salida.append(pila.pop())
+            pila.append(caracter)
+
+    # Desapilamos todos los operadores restantes
+    while pila:
+        salida.append(pila.pop())
+
+    # Convertimos la lista de salida a una cadena
+    return ''.join(salida)
+
+# Función para convertir infijo a prefijo
+def infijo_a_prefijo(expresion):
+    # Invertimos la expresión y sustituimos paréntesis
+    expresion_invertida = invertir(expresion)
+    expresion_invertida = expresion_invertida.replace('(', '#').replace(')', '(').replace('#', ')')
+
+    # Convertimos la expresión invertida a postfijo
+    expresion_postfijo = infijo_a_postfijo(expresion_invertida)
+
+    # Invertimos el resultado del postfijo para obtener el prefijo
+    return invertir(expresion_postfijo)
+
+
+infijo = "b+c/3"
+prefijo = infijo_a_prefijo(infijo)
+
+def InfijoPostfijo():
     for i in range(len(tablita)):
         if(tablita[i].expresiones != None):
-            pila = tablita[i].expresiones 
-            pilanueva = None
-            for i in pila :
-                if (pila[i] == "+" or pila[i] == '-' or pila[i] == '*' or pila[i] == '/' or pila[i] =='^'):
-                    pilanueva.append(pila[i])
-                    
-             
+            pila = tablita[i].expresiones            
+            if(pila.__contains__("+") or pila.__contains__("-") or pila.__contains__("*") or pila.__contains__("/") or pila.__contains__("^")):
+                infijo = ''.join(pila)
+                prefijo = infijo_a_prefijo(infijo)
+                tablita[i]. expresiones = prefijo
+            else: 
+                continue
                         
-                     
+                    
+def ContruirArbol():                                    #+ b / c 3
+            for i in range(len(tablita)):
+                if(tablita[i].expresiones != None):
+                    pila = tablita[i].expresiones 
+                    raiz = Nodo(None,None, None)
+                    x = 1
+                    for i in range(len(pila)):
+                        if(pila[i] == '+' or pila[i] == '-' or pila[i] == '*' or pila[i] == '/' or pila[i] == '^' and raiz.valor == None):
+                            raiz = Nodo(pila[i],None, None)
+                            continue
+                        else:
+                            if(x == 1):
+                                raiz.izq = Nodo(pila[i],None, None)
+                                x = 2
+                            else: 
+                                raiz.der = Nodo(pila[i],None, None)
+                                x = 1
 
+#Realizacion de que no va a funcionar como pensaba
 
 #-------------------------------------------------------------------------------------------------- 
-AgregarExpresionesatabla()  
-Imprimirtabla()             
+AgregarExpresionesatabla()
+InfijoPostfijo()
+Imprimirtabla()
+ContruirArbol()  
+         
         
                     
 
