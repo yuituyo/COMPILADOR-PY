@@ -1,9 +1,9 @@
-float b ;
-int a ;
-read b ;
-read a ;
-write a ;
-write b ;
+float b = 0 ;
+int a = 0 ;
+read ( b ) ;
+read ( a ) ;
+print ( a ) ;
+write  ( b ) ;
 while ( a > b )
 {
 

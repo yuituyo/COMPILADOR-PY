@@ -1,0 +1,10 @@
+UNIDAD 1(ROMANO)
+Fecha 28/marzo/2025
+Desarrollo
+Que es Analizador semantico
+  reglas semanticas
+  acciones semanticas
+  analizador semantico (codigo)
+  programa a compilar
+  corrida buena
+  corrida mala

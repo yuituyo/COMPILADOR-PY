@@ -18,7 +18,7 @@ pasos = 0
 
 #Lee textod e un archivo y lo divide
 #--------------------------------------------------------------------------------------------------
-f = open("compilar.txt","r")
+f = open("prueba.txt","r")
 
 leido = f.read()
 
@@ -170,15 +170,19 @@ if(1):#-----------------------------------------------------------------------> 
             ErrorSintactico("PALALBRA VALIDA", modificado[i])
         
 #--------------------------------------------------------------------------------------------------
+def prRed(skk): print("\033[91m {}\033[00m" .format(skk) , end='')
 #Imprimir la tablita
 def Imprimirtabla():
     for i in range(len(tablita)):
+        print('')
         print("----------")
-        print(tablita[i].pos)
-        print(tablita[i].tipo)
-        print(tablita[i].lexema)
-        print(tablita[i].expresiones)
-
+        if(tablita[i].expresiones == None):
+            print('Posiscion:  ' , tablita[i].pos ,  'Tipo: ' ,  tablita[i].tipo, 'Lexema: ', tablita[i].lexema)
+        else:
+            print('Posiscion:  ' , tablita[i].pos ,  'Tipo: ' ,  tablita[i].tipo)
+            prRed( 'Expresiones: ' )
+            prRed(tablita[i].expresiones)
+ 
 #--------------------------------------------------------------------------------------------------
 #no Terminales
 OpM ="OpM"
@@ -188,13 +192,13 @@ final = ';'
 INT =["ID","="] 
 INTC = ["OpM","NUM"]
 valoresNumericos = ['NUM','ID']
-valoresdecimales = ['decimal','ID']
+valoresdecimales = ['decimal','ID','NUM']
 valoresComparables = ['NUM','ID','decimal']
 patronWhile =['(','ID',OpL,'ID',')','{',]
 patronString =['ID','=','TXT',';']
 patronImprimirDer = ['(']
 patronImprimirIzq = [')',';']  
-patronLectura = ['(',')',';']
+patronLectura = ['(', 'ID' , ')',';']
 patronPreguntaIzq = [')','{']
 
 
@@ -553,7 +557,9 @@ def ContruirArbol():                                    #+ b / c 3
 AgregarExpresionesatabla()
 InfijoPostfijo()
 Imprimirtabla()
-ContruirArbol()  
+
+# 
+#ContruirArbol()  
          
         
                     
