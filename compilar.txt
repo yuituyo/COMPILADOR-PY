@@ -1,4 +1,4 @@
-int a = b + c / 3 ;
+int a = b + c / 33 ;
 float x = 2.13 ;
 while ( a != b )
 {
@@ -8,6 +8,7 @@ while ( a != b )
 if ( a == b )
 { 
     int z = 1 ;
+    int bb = x + a ;
 }
 int z = 1 ;
 

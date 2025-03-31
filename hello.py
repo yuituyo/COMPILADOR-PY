@@ -18,7 +18,7 @@ pasos = 0
 
 #Lee textod e un archivo y lo divide
 #--------------------------------------------------------------------------------------------------
-f = open("prueba.txt","r")
+f = open("compilar.txt","r")
 
 leido = f.read()
 
@@ -170,16 +170,27 @@ if(1):#-----------------------------------------------------------------------> 
             ErrorSintactico("PALALBRA VALIDA", modificado[i])
         
 #--------------------------------------------------------------------------------------------------
-def prRed(skk): print("\033[91m {}\033[00m" .format(skk) , end='')
+def prRed(skk): print("\033[91m {}\033[00m" .format(skk) , end= '')
+def prGreen(skk): print("\033[92m {}\033[00m" .format(skk) )
+def prYellow(skk): print("\033[93m {}\033[00m" .format(skk))
+
 #Imprimir la tablita
 def Imprimirtabla():
     for i in range(len(tablita)):
         print('')
         print("----------")
-        if(tablita[i].expresiones == None):
+        if(tablita[i].expresiones == None and tablita[i].tipo != 'ID' ):
+            
             print('Posiscion:  ' , tablita[i].pos ,  'Tipo: ' ,  tablita[i].tipo, 'Lexema: ', tablita[i].lexema)
+            
+        elif(tablita[i].expresiones ==  None and tablita[i].tipo == 'ID' ):
+            
+            print('Posiscion:  ' , tablita[i].pos ,  'Tipo: ' ,  tablita[i].tipo, 'Lexema: ', end= ' ')
+            prYellow(tablita[i].lexema) 
+            
         else:
-            print('Posiscion:  ' , tablita[i].pos ,  'Tipo: ' ,  tablita[i].tipo)
+            print('Posiscion:  ' , tablita[i].pos ,  'Tipo: ' ,  tablita[i].tipo, end= ' ')
+            prGreen(tablita[i].lexema)
             prRed( 'Expresiones: ' )
             prRed(tablita[i].expresiones)
  
@@ -518,9 +529,6 @@ def infijo_a_prefijo(expresion):
     return invertir(expresion_postfijo)
 
 
-infijo = "b+c/3"
-prefijo = infijo_a_prefijo(infijo)
-
 def InfijoPostfijo():
     for i in range(len(tablita)):
         if(tablita[i].expresiones != None):
@@ -533,34 +541,49 @@ def InfijoPostfijo():
                 continue
                         
                     
-def ContruirArbol():                                    #+ b / c 3
-            for i in range(len(tablita)):
-                if(tablita[i].expresiones != None):
-                    pila = tablita[i].expresiones 
-                    raiz = Nodo(None,None, None)
-                    x = 1
-                    for i in range(len(pila)):
-                        if(pila[i] == '+' or pila[i] == '-' or pila[i] == '*' or pila[i] == '/' or pila[i] == '^' and raiz.valor == None):
-                            raiz = Nodo(pila[i],None, None)
-                            continue
-                        else:
-                            if(x == 1):
-                                raiz.izq = Nodo(pila[i],None, None)
-                                x = 2
-                            else: 
-                                raiz.der = Nodo(pila[i],None, None)
-                                x = 1
 
-#Realizacion de que no va a funcionar como pensaba
+def RealcionarIDS():    
+    for i in range(len(tablita)):
+        
+        if(tablita[i].tipo == 'ID' and tablita[i].expresiones != None):
+            
+            posicionID = tablita[i].pos
+            expresionTemp = tablita[i].expresiones
+            
+            for i in range(posicionID + 1 ,len(tablita)):
+                
+                if(tablita[i].tipo == 'ID' and tablita[i].expresiones == None and tablita[posicionID].lexema == tablita[i].lexema):
+                    
+                    tablita[i].expresiones = expresionTemp
+                    
+                if(tablita[i].expresiones != None and tablita[posicionID].lexema == tablita[i].lexema):
+                    break
+
+def Estadefinido():
+    for i in range(len(tablita)):
+        if(tablita[i].expresiones == None and tablita[i].tipo == 'ID'): 
+            print("El ID: " + tablita[i].lexema + " no esta definido")
+            sys.exit()              
+
+
+def SemanticoExpresiones(): ##Analizar si las expresiones son validas
+    #checar cada id de la expresion y si se pueden operar juntos
+    #
+    #
+
+    for i in range(len(tablita)):
+        if(tablita):
+            uwu
+    
+  
 
 #-------------------------------------------------------------------------------------------------- 
 AgregarExpresionesatabla()
 InfijoPostfijo()
-Imprimirtabla()
+RealcionarIDS()
+#Imprimirtabla()
+Estadefinido()
 
-# 
-#ContruirArbol()  
-         
         
                     
 
