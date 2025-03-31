@@ -566,14 +566,23 @@ def Estadefinido():
             sys.exit()              
 
 
-def SemanticoExpresiones(): ##Analizar si las expresiones son validas
-    #checar cada id de la expresion y si se pueden operar juntos
-    #
-    #
+def CrearArbol():
+     for i in range(len(tablita)):
+         
+         lonexpre = len(tablita[i].expresiones)
+         
+         if(tablita[i].tipo == 'ID' and lonexpre > 0 ):
+             pila = tablita[i].expresiones
+             raiz = None
+             for i2 in pila:
+                 if(raiz == None):
+                    raiz = Nodo(pila[i],)
+                    
+                 
+     
 
-    for i in range(len(tablita)):
-        if(tablita):
-            uwu
+             
+           
     
   
 
@@ -582,7 +591,9 @@ AgregarExpresionesatabla()
 InfijoPostfijo()
 RealcionarIDS()
 #Imprimirtabla()
-Estadefinido()
+#Estadefinido()
+CrearArbol()
+
 
         
                     
