@@ -567,16 +567,27 @@ def Estadefinido():
 
 
 def CrearArbol():
-     for i in range(len(tablita)):
-         
-         lonexpre = len(tablita[i].expresiones)
-         
-         if(tablita[i].tipo == 'ID' and lonexpre > 0 ):
-             pila = tablita[i].expresiones
-             raiz = None
-             for i2 in pila:
-                 if(raiz == None):
-                    raiz = Nodo(pila[i],)
+    for i in range(len(tablita)):
+                  
+        if(tablita[i].tipo == 'ID' and  tablita[i].expresiones != None ):
+             
+            if(tablita[i].expresiones > 0):
+                pila = tablita[i].expresiones
+                raiz = None
+             
+                for i2 in range(len(pila)):
+                    
+                    if(raiz == None):
+                        raiz = Nodo(pila[i],None,None)
+                        
+                        
+                        
+            else:
+                continue                        
+
+        else:
+            
+            continue
                     
                  
      
