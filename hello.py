@@ -57,10 +57,10 @@ class Tabladesimbolos:
         self.arbol = arbol
         
 class Nodo:
-    def __init__(self, valor, izq, der):
+    def __init__(self, valor):
         self.valor = valor
-        self.izq = izq
-        self.der = der
+        self.izquierda = None
+        self.derecha = None
 #--------------------------------------------------------------------------------------------------
 
 
@@ -470,64 +470,99 @@ def AgregarExpresionesatabla():
             continue
         
 # Función para determinar la precedencia de los operadores
-def precedencia(op):
-    if op == '+' or op == '-':
-        return 1
-    if op == '*' or op == '/':
-        return 2
-    if op == '^':
+def infijo_a_prefijo(expresion_infija):
+    """
+    Convierte una expresión matemática en notación infija a notación prefija
+    
+    Args:
+        expresion_infija: String con la expresión en notación infija (ej. "(3 + 4) * 5")
+        
+    Returns:
+        String con la expresión en notación prefija (ej. "* + 3 4 5")
+    """
+    # Paso 1: Invertir la expresión infija
+    expresion_invertida = invertir_expresion(expresion_infija)
+    
+    # Paso 2: Convertir a postfijo (pero de la expresión invertida)
+    expresion_postfija = infijo_a_postfijo(expresion_invertida)
+    
+    # Paso 3: Invertir el postfijo para obtener prefijo
+    expresion_prefija = expresion_postfija[::-1]
+    
+    return expresion_prefija
+
+def invertir_expresion(expresion):
+    """
+    Invierte la expresión intercambiando paréntesis y el orden de los caracteres
+    
+    Args:
+        expresion: String con la expresión original
+        
+    Returns:
+        String con la expresión invertida
+    """
+    expresion = expresion.replace(' ', '')  # Eliminar espacios
+    # Invertir la cadena y cambiar paréntesis
+    invertida = []
+    for char in expresion[::-1]:
+        if char == '(':
+            invertida.append(')')
+        elif char == ')':
+            invertida.append('(')
+        else:
+            invertida.append(char)
+    return ''.join(invertida)
+
+def precedencia(operador):
+    """
+    Devuelve la precedencia de un operador
+    
+    Args:
+        operador: String con el operador (+, -, *, /, ^)
+        
+    Returns:
+        Valor numérico de precedencia (mayor número = mayor precedencia)
+    """
+    if operador == '^':
+        return 4
+    elif operador in ['*', '/']:
         return 3
-    return 0
+    elif operador in ['+', '-']:
+        return 2
+    else:
+        return 0
 
-# Función para invertir una cadena
-def invertir(cadena):
-    return cadena[::-1]
-
-# Función para convertir infijo a postfijo
 def infijo_a_postfijo(expresion):
-    pila = []  # Pila para los operadores
-    salida = []  # Lista para la expresión postfija
-
+    """
+    Convierte una expresión infija a postfija usando el algoritmo shunting-yard
+    
+    Args:
+        expresion: String con la expresión infija
+        
+    Returns:
+        String con la expresión postfija
+    """
+    pila = []
+    salida = []
+    
     for caracter in expresion:
-        # Si el caracter es un operando (letra o número), lo agregamos directamente a la salida
-        if caracter.isalnum():
+        if caracter.isdigit() or caracter.isalpha():
             salida.append(caracter)
-
-        # Si el caracter es un paréntesis izquierdo, lo apilamos
         elif caracter == '(':
             pila.append(caracter)
-
-        # Si el caracter es un paréntesis derecho, desapilamos hasta encontrar el paréntesis izquierdo
         elif caracter == ')':
             while pila and pila[-1] != '(':
                 salida.append(pila.pop())
-            pila.pop()  # Desapilamos el paréntesis izquierdo
-
-        # Si el caracter es un operador
-        else:
-            while pila and precedencia(pila[-1]) >= precedencia(caracter):
+            pila.pop()  # Eliminar '(' de la pila
+        else:  # Es un operador
+            while (pila and precedencia(pila[-1]) >= precedencia(caracter)):
                 salida.append(pila.pop())
             pila.append(caracter)
-
-    # Desapilamos todos los operadores restantes
+    
     while pila:
         salida.append(pila.pop())
-
-    # Convertimos la lista de salida a una cadena
-    return ''.join(salida)
-
-# Función para convertir infijo a prefijo
-def infijo_a_prefijo(expresion):
-    # Invertimos la expresión y sustituimos paréntesis
-    expresion_invertida = invertir(expresion)
-    expresion_invertida = expresion_invertida.replace('(', '#').replace(')', '(').replace('#', ')')
-
-    # Convertimos la expresión invertida a postfijo
-    expresion_postfijo = infijo_a_postfijo(expresion_invertida)
-
-    # Invertimos el resultado del postfijo para obtener el prefijo
-    return invertir(expresion_postfijo)
-
+    
+    return ' '.join(salida)
 
 def InfijoPostfijo():
     for i in range(len(tablita)):
@@ -566,20 +601,31 @@ def Estadefinido():
             sys.exit()              
 
 
-def CrearArbol():
-     for i in range(len(tablita)):
-         
-         lonexpre = len(tablita[i].expresiones)
-         
-         if(tablita[i].tipo == 'ID' and lonexpre > 0 ):
-             pila = tablita[i].expresiones
-             raiz = None
-             for i2 in pila:
-                 if(raiz == None):
-                    raiz = Nodo(pila[i],)
-                    
-                 
-     
+def construir_arbol_prefijo(tokens):
+    if not tokens:
+        return None
+    
+    # Extraemos el primer token
+    token = tokens.pop(0)
+    nodo = Nodo(token)
+    
+    # Si es un operador, construimos los subárboles izquierdo y derecho
+    if token in '+-*/^':
+        nodo.izquierda = construir_arbol_prefijo(tokens)
+        nodo.derecha = construir_arbol_prefijo(tokens)
+    
+    return nodo
+
+def DetectarExpresiones():
+    for i in  range(len(tablita)):
+        if(tablita[i].tipo  == 'ID' and tablita[i].expresiones != None):
+            tokens = tablita[i].expresiones
+            longitud = len(tokens)
+            if(longitud > 1 ):
+              tablita[i].arbol = construir_arbol_prefijo(tokens)
+            
+            
+            
 
              
            
@@ -592,7 +638,8 @@ InfijoPostfijo()
 RealcionarIDS()
 #Imprimirtabla()
 #Estadefinido()
-CrearArbol()
+DetectarExpresiones()
+
 
 
         
