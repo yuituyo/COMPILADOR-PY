@@ -49,12 +49,14 @@ Imprimiples = ["TXT","ID"]
 #Tabla de simbolos
 #--------------------------------------------------------------------------------------------------
 class Tabladesimbolos:
-    def __init__(self, pos ,tipo,lexema, expresiones,arbol):
+    def __init__(self, pos ,tipo,lexema, expresiones,arbol,expsemantica,arbseman):
         self.pos = pos
         self.tipo = tipo
         self.lexema = lexema
         self.expresiones = expresiones
         self.arbol = arbol
+        self.expsemantica = expsemantica
+        self.arbolSeman = arbseman
         
 class Nodo:
     def __init__(self, valor, izq, der):
@@ -66,7 +68,7 @@ class Nodo:
 
 tablita = []
 for i in range(len(modificado)):
-    tablita.append(Tabladesimbolos(i,"","",None,None))
+    tablita.append(Tabladesimbolos(i,"","",None,None,None,None))
 
 
 if(1):#-----------------------------------------------------------------------> Si lexiquea o no
@@ -679,8 +681,25 @@ def hacer_Evaluacion():
           
         if (tablita[i].arbol != None):
             uwu = None
-            
-            
+ 
+ 
+def Expresionsemantica():
+    for i in range(len(tablita)):
+            if(tablita[i].expresiones != None ):
+                
+                exp = tablita[i].expresiones
+                posi = tablita[i].pos + len(exp) + 2
+                                
+                for i2 in range(len(exp)):
+                  if(exp[i2] not in '+-*/^'):
+                      exp[i2]= BuscarTipo(exp[i2],posi)
+                
+                tablita[i].expsemantica = exp
+                
+            else:
+                continue
+                
+                
                 
 
 #-------------------------------------------------------------------------------------------------- 
@@ -689,7 +708,8 @@ InfijoPostfijo()
 RealcionarIDS()
 #Estadefinido()
 agregarArbol()
-Imprimirtabla()
+#Imprimirtabla()
+Expresionsemantica()
 
 
 
