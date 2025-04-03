@@ -11,7 +11,7 @@ RENumero ="^[0-9]+[0-9])"
 
 OperadorLogico =[">","<","&&","!=","||",'==']
 OperadorMatematico =["+","-","*","/","^"]
-
+Ids = []
 
 pasos = 0
 #--------------------------------------------------------------------------------------------------
@@ -592,6 +592,7 @@ class Nodo:
         self.valor = valor
         self.izquierda = None
         self.derecha = None
+        self.tipo = None  # Almacenará el tipo de dato del nodo
 
 def construir_arbol_desde_prefijo(expresion_prefija):
     """
@@ -634,7 +635,6 @@ def agregarArbol():
                 
                 tablita[i].arbol = construir_arbol_desde_prefijo(tablita[i].expresiones)             
            
-
 def BuscarTipo(lexema, pos):
     
     tablitaB = []
@@ -649,32 +649,6 @@ def BuscarTipo(lexema, pos):
             return tablitaB[i].tipo
         else:
             continue
-
-
-def evaluar_arbol(raiz,pos):
-   
-    if raiz is None:
-        return 0
-    
-    # Si es un nodo hoja (número), devolvemos su valor
-    if raiz.izquierda is None and raiz.derecha is None:
-        try:
-            return float(raiz.valor)
-        except ValueError:
-            raise ValueError(f"Valor no numérico: {raiz.valor}")
-    
-    # Evaluamos los subárboles
-    izquierda = evaluar_arbol(raiz.izquierda)
-    derecha = evaluar_arbol(raiz.derecha)
-    
-    # Aplicamos la operación
-    if (raiz.valor == '+' or  raiz.valor == '-' or raiz.valor == '*' or raiz.valor == '/' or raiz.valor == '^'):
-        
-        if( BuscarTipo(izquierda.valor,pos) !=  BuscarTipo(derecha.valor,pos)):
-            uwu = None
-        
-    else:
-        raise ValueError(f"Operador no soportado: {raiz.valor}")
     
 def hacer_Evaluacion():
      for i in range(len(tablita)):
@@ -682,35 +656,124 @@ def hacer_Evaluacion():
         if (tablita[i].arbol != None):
             uwu = None
  
- 
 def Expresionsemantica():
+    
     for i in range(len(tablita)):
             if(tablita[i].expresiones != None ):
                 
-                exp = tablita[i].expresiones
+                exp = list(tablita[i].expresiones)
+                
                 posi = tablita[i].pos + len(exp) + 2
                                 
                 for i2 in range(len(exp)):
                   if(exp[i2] not in '+-*/^'):
                       exp[i2]= BuscarTipo(exp[i2],posi)
+                      
+                      if (exp[i2] == 'NUM'):
+                        exp[i2] = 'int'
+                      
+                      if(exp[i2] == 'decimal'):
+                          exp[i2] = 'float'
                 
                 tablita[i].expsemantica = exp
                 
             else:
                 continue
-                
-                
-                
+ 
+def construir_arbol_desde_prefijo(expresion_prefija):
+    """Construye el árbol desde notación prefija (igual que antes)"""
+    iterador = iter(expresion_prefija)
+    
+    def construir_recursivo():
+        try:
+            token = next(iterador)
+        except StopIteration:
+            return None
+        
+        nodo = Nodo(token)
+        
+        if token in '+-*/^':
+            nodo.izquierda = construir_recursivo()
+            nodo.derecha = construir_recursivo()
+        elif token.lower() in ['true', 'false']:
+            nodo.tipo = 'bool'
+        else:
+            # Determinar si es int o float
+            try:
+                int(token)
+                nodo.tipo = 'int'
+            except ValueError:
+                try:
+                    float(token)
+                    nodo.tipo = 'float'
+                except ValueError:
+                    raise ValueError(f"Valor no reconocido: {token}")
+        
+        return nodo
+    
+    return construir_recursivo() 
+ 
+def AddArbolsem():
+    uwu = None
+    
+def comprobar_tipos(raiz):
+    """
+    Comprueba los tipos en el árbol de expresiones y asigna tipos a los nodos internos
 
+    Args:
+        raiz: Nodo raíz del árbol
+        
+    Returns:
+        El tipo de dato de la expresión completa
+        
+    Raises:
+        TypeError: Si hay incompatibilidad de tipos
+    """
+    if raiz is None:
+        return None
+
+    # Si es un nodo hoja, ya tiene tipo asignado
+    if raiz.izquierda is None and raiz.derecha is None:
+        return raiz.tipo
+
+    # Comprobar tipos de los subárboles
+    tipo_izq = comprobar_tipos(raiz.izquierda)
+    tipo_der = comprobar_tipos(raiz.derecha)
+
+    # Operadores aritméticos
+    if raiz.valor in '+-*/^':
+        if tipo_izq not in ['int', 'float'] or tipo_der not in ['int', 'float']:
+            raise TypeError(f"Operación {raiz.valor} no soportada para tipos {tipo_izq} y {tipo_der}")
+        
+        # El resultado será float si al menos un operando es float
+        raiz.tipo = 'float' if 'float' in [tipo_izq, tipo_der] else 'int'
+
+    # Operadores de comparación (ejemplo adicional)
+    elif raiz.valor in ['==', '!=', '<', '>', '<=', '>=']:
+        if tipo_izq != tipo_der:
+            raise TypeError(f"Comparación {raiz.valor} requiere tipos iguales, no {tipo_izq} y {tipo_der}")
+        raiz.tipo = 'bool'
+
+    # Operadores lógicos (ejemplo adicional)
+    elif raiz.valor in ['&&', '||']:
+        if tipo_izq != 'bool' or tipo_der != 'bool':
+            raise TypeError(f"Operador lógico {raiz.valor} requiere booleanos")
+        raiz.tipo = 'bool'
+
+    else:
+        raise ValueError(f"Operador desconocido: {raiz.valor}")
+
+    return raiz.tipo  
+                            
 #-------------------------------------------------------------------------------------------------- 
 AgregarExpresionesatabla()
 InfijoPostfijo()
 RealcionarIDS()
-#Estadefinido()
+Estadefinido()
 agregarArbol()
 #Imprimirtabla()
 Expresionsemantica()
-
+print('uwu')
 
 
 
