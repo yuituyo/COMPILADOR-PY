@@ -469,79 +469,98 @@ def AgregarExpresionesatabla():
             tablita[i-1].expresiones = lista
             continue
         
-# Función para determinar la precedencia de los operadores
-def precedencia(op):
-    if op == '+' or op == '-':
-        return 1
-    if op == '*' or op == '/':
-        return 2
-    if op == '^':
+def invertir_lista(lista_original):
+    """
+    Invierte el orden de la lista y cambia paréntesis
+    
+    Args:
+        lista_original: Lista de tokens a invertir
+        
+    Returns:
+        Lista invertida con paréntesis cambiados
+    """
+    invertida = []
+    for item in reversed(lista_original):
+        if item == '(':
+            invertida.append(')')
+        elif item == ')':
+            invertida.append('(')
+        else:
+            invertida.append(item)
+    return invertida
+
+def precedencia(operador):
+    """
+    Devuelve la precedencia de operadores
+    
+    Args:
+        operador: String con el operador
+        
+    Returns:
+        Valor numérico de precedencia
+    """
+    if operador == '^':
+        return 4
+    elif operador in ['*', '/']:
         return 3
-    return 0
+    elif operador in ['+', '-']:
+        return 2
+    else:
+        return 0
 
-# Función para invertir una cadena
-def invertir(cadena):
-    return cadena[::-1]
-
-# Función para convertir infijo a postfijo
 def infijo_a_postfijo(expresion):
-    pila = []  # Pila para los operadores
-    salida = []  # Lista para la expresión postfija
-
-    for caracter in expresion:
-        # Si el caracter es un operando (letra o número), lo agregamos directamente a la salida
-        if caracter.isalnum():
-            salida.append(caracter)
-
-        # Si el caracter es un paréntesis izquierdo, lo apilamos
-        elif caracter == '(':
-            pila.append(caracter)
-
-        # Si el caracter es un paréntesis derecho, desapilamos hasta encontrar el paréntesis izquierdo
-        elif caracter == ')':
+    """
+    Convierte una expresión infija (lista) a postfija (lista)
+    
+    Args:
+        expresion: Lista de tokens en notación infija
+        
+    Returns:
+        Lista de tokens en notación postfija
+    """
+    pila = []
+    salida = []
+    
+    for token in expresion:
+        if token.isdigit() or token.isalpha():
+            salida.append(token)
+        elif token == '(':
+            pila.append(token)
+        elif token == ')':
             while pila and pila[-1] != '(':
                 salida.append(pila.pop())
-            pila.pop()  # Desapilamos el paréntesis izquierdo
-
-        # Si el caracter es un operador
-        else:
-            while pila and precedencia(pila[-1]) >= precedencia(caracter):
+            pila.pop()  # Eliminar '(' de la pila
+        else:  # Es un operador
+            while (pila and pila[-1] != '(' and 
+                   precedencia(pila[-1]) >= precedencia(token)):
                 salida.append(pila.pop())
-            pila.append(caracter)
-
-    # Desapilamos todos los operadores restantes
+            pila.append(token)
+    
+    # Vaciar lo que quede en la pila
     while pila:
         salida.append(pila.pop())
-
-    # Convertimos la lista de salida a una cadena
-    return ''.join(salida)
-
-# Función para convertir infijo a prefijo
-def infijo_a_prefijo(expresion):
-    # Invertimos la expresión y sustituimos paréntesis
-    expresion_invertida = invertir(expresion)
-    expresion_invertida = expresion_invertida.replace('(', '#').replace(')', '(').replace('#', ')')
-
-    # Convertimos la expresión invertida a postfijo
-    expresion_postfijo = infijo_a_postfijo(expresion_invertida)
-
-    # Invertimos el resultado del postfijo para obtener el prefijo
-    return invertir(expresion_postfijo)
-
+    
+    return salida
 
 def InfijoPostfijo():
     for i in range(len(tablita)):
         if(tablita[i].expresiones != None):
             pila = tablita[i].expresiones            
             if(pila.__contains__("+") or pila.__contains__("-") or pila.__contains__("*") or pila.__contains__("/") or pila.__contains__("^")):
-                infijo = ''.join(pila)
-                prefijo = infijo_a_prefijo(infijo)
-                tablita[i]. expresiones = prefijo
+            
+                expresion_invertida = invertir_lista(pila)
+    
+                # Paso 2: Convertir a postfijo (de la expresión invertida)
+                expresion_postfija = infijo_a_postfijo(expresion_invertida)
+        
+                # Paso 3: Invertir el postfijo para obtener prefijo
+                expresion_prefija = expresion_postfija[::-1]
+
+                tablita[i].expresiones = expresion_prefija
+                
             else: 
                 continue
                         
-                    
-
 def RealcionarIDS():    
     for i in range(len(tablita)):
         
@@ -565,45 +584,117 @@ def Estadefinido():
             print("El ID: " + tablita[i].lexema + " no esta definido")
             sys.exit()              
 
+class Nodo:
+    """Clase que representa un nodo en el árbol de expresiones"""
+    def __init__(self, valor):
+        self.valor = valor
+        self.izquierda = None
+        self.derecha = None
 
-def CrearArbol():
-    for i in range(len(tablita)):
-                  
-        if(tablita[i].tipo == 'ID' and  tablita[i].expresiones != None ):
-             
-            if(tablita[i].expresiones > 0):
-                pila = tablita[i].expresiones
-                raiz = None
-             
-                for i2 in range(len(pila)):
-                    
-                    if(raiz == None):
-                        raiz = Nodo(pila[i],None,None)
-                        
-                        
-                        
-            else:
-                continue                        
-
-        else:
-            
-            continue
-                    
-                 
-     
-
-             
-           
+def construir_arbol_desde_prefijo(expresion_prefija):
+    """
+    Construye un árbol de expresiones a partir de una lista en notación prefija
     
-  
+    Args:
+        expresion_prefija: Lista de tokens en orden prefijo (ej. ['*', '+', '3', '4', '5'])
+        
+    Returns:
+        Nodo raíz del árbol construido
+    """
+    # Usamos un iterador para recorrer la lista fácilmente
+    iterador = iter(expresion_prefija)
+    
+    def construir_recursivo():
+        try:
+            token = next(iterador)
+        except StopIteration:
+            return None
+        
+        nodo = Nodo(token)
+        
+        # Si es un operador, necesita hijos izquierdo y derecho
+        if token in '+-*/^':
+            nodo.izquierda = construir_recursivo()
+            nodo.derecha = construir_recursivo()
+        
+        return nodo
+    
+    return construir_recursivo()
+
+def agregarArbol():
+    for i in range(len(tablita)):
+          
+        if (tablita[i].tipo == 'ID' and tablita[i].expresiones != None):
+            
+            longitud = len(tablita[i].expresiones)
+            
+            if(longitud > 1):
+                
+                tablita[i].arbol = construir_arbol_desde_prefijo(tablita[i].expresiones)             
+           
+
+def BuscarTipo(lexema, pos):
+    
+    tablitaB = []
+    
+    for i in range(pos):
+        tablitaB.append(tablita[i])       
+
+    tablitaB.reverse()
+    
+    for i in range(pos):
+        if(tablitaB[i].lexema == lexema):
+            return tablitaB[i].tipo
+        else:
+            continue
+
+
+def evaluar_arbol(raiz,pos):
+   
+    if raiz is None:
+        return 0
+    
+    # Si es un nodo hoja (número), devolvemos su valor
+    if raiz.izquierda is None and raiz.derecha is None:
+        try:
+            return float(raiz.valor)
+        except ValueError:
+            raise ValueError(f"Valor no numérico: {raiz.valor}")
+    
+    # Evaluamos los subárboles
+    izquierda = evaluar_arbol(raiz.izquierda)
+    derecha = evaluar_arbol(raiz.derecha)
+    
+    # Aplicamos la operación
+    if (raiz.valor == '+' or  raiz.valor == '-' or raiz.valor == '*' or raiz.valor == '/' or raiz.valor == '^'):
+        
+        if( BuscarTipo(izquierda.valor,pos) !=  BuscarTipo(derecha.valor,pos)):
+            uwu = None
+        
+    else:
+        raise ValueError(f"Operador no soportado: {raiz.valor}")
+    
+def hacer_Evaluacion():
+     for i in range(len(tablita)):
+          
+        if (tablita[i].arbol != None):
+            uwu = None
+            
+            
+                
 
 #-------------------------------------------------------------------------------------------------- 
 AgregarExpresionesatabla()
 InfijoPostfijo()
 RealcionarIDS()
-#Imprimirtabla()
 #Estadefinido()
-CrearArbol()
+agregarArbol()
+Imprimirtabla()
+
+
+
+
+
 
 
         
