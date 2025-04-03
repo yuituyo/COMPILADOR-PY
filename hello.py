@@ -601,31 +601,31 @@ def Estadefinido():
             sys.exit()              
 
 
-def construir_arbol_prefijo(tokens):
-    if not tokens:
-        return None
-    
-    # Extraemos el primer token
-    token = tokens.pop(0)
-    nodo = Nodo(token)
-    
-    # Si es un operador, construimos los subárboles izquierdo y derecho
-    if token in '+-*/^':
-        nodo.izquierda = construir_arbol_prefijo(tokens)
-        nodo.derecha = construir_arbol_prefijo(tokens)
-    
-    return nodo
+def CrearArbol():
+    for i in range(len(tablita)):
+                  
+        if(tablita[i].tipo == 'ID' and  tablita[i].expresiones != None ):
+             
+            if(tablita[i].expresiones > 0):
+                pila = tablita[i].expresiones
+                raiz = None
+             
+                for i2 in range(len(pila)):
+                    
+                    if(raiz == None):
+                        raiz = Nodo(pila[i],None,None)
+                        
+                        
+                        
+            else:
+                continue                        
 
-def DetectarExpresiones():
-    for i in  range(len(tablita)):
-        if(tablita[i].tipo  == 'ID' and tablita[i].expresiones != None):
-            tokens = tablita[i].expresiones
-            longitud = len(tokens)
-            if(longitud > 1 ):
-              tablita[i].arbol = construir_arbol_prefijo(tokens)
+        else:
             
-            
-            
+            continue
+                    
+                 
+     
 
              
            
