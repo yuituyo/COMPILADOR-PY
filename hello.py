@@ -78,6 +78,10 @@ if(1):#-----------------------------------------------------------------------> 
         if comprobar("int",modificado[i]):
             AnadirTablita(i,'int',modificado[i])
             continue
+        
+        if comprobar("else",modificado[i]):
+            AnadirTablita(i,'else',modificado[i])
+            continue
 
         if comprobar("float",modificado[i]):
             AnadirTablita(i,'float',modificado[i])
@@ -245,6 +249,8 @@ def Sintactico(numero):#RECURSIVO
                     case "if":
                         pasos += 1
                         Sintactico(8) 
+                    case "else": 
+                        Sintactico(1)   
                 
             case 2:#int
                     for i in range(len(INT)):#Es int?
@@ -674,7 +680,7 @@ def BuscarTipo(lexema, pos):
     
     tablitaB = []
     
-    for i in range(pos):
+    for i in range(pos-1):
         tablitaB.append(tablita[i])       
 
     tablitaB.reverse()
@@ -688,6 +694,7 @@ def BuscarTipo(lexema, pos):
             return 'float'
         except ValueError:
             for i in range(pos):
+                #checar buscar tipo al momento de  buscar el pos 47
                 if(tablitaB[i].lexema == lexema ):
                     return tablitaB[i].tipodato
            
@@ -842,7 +849,7 @@ RealcionarIDS()
 Estadefinido()
 Agregartipo()
 Expresionsemantica()
-AddArbolsem()
+#AddArbolsem()
 
 #Comparaciones
 Checarwhile()
@@ -851,7 +858,7 @@ Checarwhile()
 
 ### Impresiones
 #Imprimirtabla()
-Imprsem()
+#Imprsem()
                
 
                         
