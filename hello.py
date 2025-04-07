@@ -49,14 +49,15 @@ Imprimiples = ["TXT","ID"]
 #Tabla de simbolos
 #--------------------------------------------------------------------------------------------------
 class Tabladesimbolos:
-    def __init__(self, pos ,tipo,lexema, expresiones,arbol,expsemantica,arbseman):
+    def __init__(self, pos ,tipo,lexema, expresiones,arbol,expsemantica,arbseman,tipodato):
         self.pos = pos
         self.tipo = tipo
         self.lexema = lexema
         self.expresiones = expresiones
         self.arbol = arbol
         self.expsemantica = expsemantica
-        self.arbolSeman = arbseman
+        self.arbseman = arbseman
+        self.tipodato = tipodato
         
 class Nodo:
     def __init__(self, valor):
@@ -68,7 +69,7 @@ class Nodo:
 
 tablita = []
 for i in range(len(modificado)):
-    tablita.append(Tabladesimbolos(i,"","",None,None,None,None))
+    tablita.append(Tabladesimbolos(i,"","",None,None,None,None,None))
 
 
 if(1):#-----------------------------------------------------------------------> Si lexiquea o no
@@ -524,7 +525,7 @@ def infijo_a_postfijo(expresion):
     salida = []
     
     for token in expresion:
-        if token.isdigit() or token.isalpha():
+        if token.isdigit() or token.isalpha() or token.isidentifier():
             salida.append(token)
         elif token == '(':
             pila.append(token)
@@ -544,7 +545,7 @@ def infijo_a_postfijo(expresion):
     
     return salida
 
-def InfijoPostfijo():
+def AddInfijoPostfijo():
     for i in range(len(tablita)):
         if(tablita[i].expresiones != None):
             pila = tablita[i].expresiones            
@@ -586,6 +587,40 @@ def Estadefinido():
             print("El ID: " + tablita[i].lexema + " no esta definido")
             sys.exit()              
 
+
+def Agregartipo():
+    for i in range(len(tablita)):
+         
+        if(tablita[i].tipo == 'ID' ):
+             
+            if(tablita[i-1].tipo == 'int'):
+                
+                tablita[i].tipodato = 'int'
+                continue
+                
+            elif(tablita[i-1].tipo == 'float'):
+                
+                tablita[i].tipodato = 'float'
+                continue
+        
+        dentro = tablita[i].expresiones
+        if(tablita[i].expresiones != None):
+            if(len(dentro) == 1 ):
+                
+                token = tablita[i].expresiones[0]
+                
+                try:
+                    int(token)
+                    tablita[i].tipodato = 'int'
+                    continue
+                except ValueError:
+                    try:
+                        float(token)
+                        tablita[i].tipodato = 'float'
+                        continue
+                    except ValueError:
+                        raise ValueError(f"Valor no reconocido: {token}")
+                        
 class Nodo:
     """Clase que representa un nodo en el árbol de expresiones"""
     def __init__(self, valor):
@@ -594,7 +629,7 @@ class Nodo:
         self.derecha = None
         self.tipo = None  # Almacenará el tipo de dato del nodo
 
-def construir_arbol_desde_prefijo(expresion_prefija):
+def construir_arbol_desde_prefijoN(expresion_prefija):
     """
     Construye un árbol de expresiones a partir de una lista en notación prefija
     
@@ -607,7 +642,7 @@ def construir_arbol_desde_prefijo(expresion_prefija):
     # Usamos un iterador para recorrer la lista fácilmente
     iterador = iter(expresion_prefija)
     
-    def construir_recursivo():
+    def construir_recursivoN():
         try:
             token = next(iterador)
         except StopIteration:
@@ -617,12 +652,12 @@ def construir_arbol_desde_prefijo(expresion_prefija):
         
         # Si es un operador, necesita hijos izquierdo y derecho
         if token in '+-*/^':
-            nodo.izquierda = construir_recursivo()
-            nodo.derecha = construir_recursivo()
+            nodo.izquierda = construir_recursivoN()
+            nodo.derecha = construir_recursivoN()
         
         return nodo
     
-    return construir_recursivo()
+    return construir_recursivoN()
 
 def agregarArbol():
     for i in range(len(tablita)):
@@ -633,7 +668,7 @@ def agregarArbol():
             
             if(longitud > 1):
                 
-                tablita[i].arbol = construir_arbol_desde_prefijo(tablita[i].expresiones)             
+                tablita[i].arbol = construir_arbol_desde_prefijoN(tablita[i].expresiones)             
            
 def BuscarTipo(lexema, pos):
     
@@ -644,18 +679,18 @@ def BuscarTipo(lexema, pos):
 
     tablitaB.reverse()
     
-    for i in range(pos):
-        if(tablitaB[i].lexema == lexema):
-            return tablitaB[i].tipo
-        else:
-            continue
-    
-def hacer_Evaluacion():
-     for i in range(len(tablita)):
-          
-        if (tablita[i].arbol != None):
-            uwu = None
- 
+    try:
+        int(lexema) 
+        return 'int'
+    except ValueError:
+        try:
+            float(lexema)
+            return 'float'
+        except ValueError:
+            for i in range(pos):
+                if(tablitaB[i].lexema == lexema ):
+                    return tablitaB[i].tipodato
+           
 def Expresionsemantica():
     
     for i in range(len(tablita)):
@@ -664,6 +699,8 @@ def Expresionsemantica():
                 exp = list(tablita[i].expresiones)
                 
                 posi = tablita[i].pos + len(exp) + 2
+                
+                # Determinar si es int o float
                                 
                 for i2 in range(len(exp)):
                   if(exp[i2] not in '+-*/^'):
@@ -698,24 +735,20 @@ def construir_arbol_desde_prefijo(expresion_prefija):
         elif token.lower() in ['true', 'false']:
             nodo.tipo = 'bool'
         else:
-            # Determinar si es int o float
-            try:
-                int(token)
+        
+            if(token == 'int'):
                 nodo.tipo = 'int'
-            except ValueError:
-                try:
-                    float(token)
-                    nodo.tipo = 'float'
-                except ValueError:
-                    raise ValueError(f"Valor no reconocido: {token}")
+            elif(token == 'float'):
+                nodo.tipo = 'float'
+            else:
+                print(token,"  :  No es un valor operable")
+                sys.exit()    
         
         return nodo
     
     return construir_recursivo() 
- 
-def AddArbolsem():
-    uwu = None
-    
+
+
 def comprobar_tipos(raiz):
     """
     Comprueba los tipos en el árbol de expresiones y asigna tipos a los nodos internos
@@ -764,24 +797,54 @@ def comprobar_tipos(raiz):
         raise ValueError(f"Operador desconocido: {raiz.valor}")
 
     return raiz.tipo  
+
+ 
+def AddArbolsem():
+    for i in range(len(tablita)):
+        if(tablita[i].expsemantica != None):
+            lon = len(tablita[i].expsemantica)
+            if ( lon > 1 ):
+                tablita[i].arbseman = construir_arbol_desde_prefijo(tablita[i].expsemantica)
+                tablita[i].tipo = comprobar_tipos(tablita[i].arbseman)
+            
+            
+    
+
+
+def Imprsem():
+    for i in range(len(tablita)):
+        if(tablita[i].tipodato != None):
+            print(tablita[i].pos)
+            print(tablita[i].lexema)
+            print(tablita[i].tipo)
+            print(tablita[i].tipodato)
+            print(tablita[i].expresiones)
+            print(tablita[i].expsemantica)
+            print("---------------")
+
                             
 #-------------------------------------------------------------------------------------------------- 
+
+##Agregar
 AgregarExpresionesatabla()
-InfijoPostfijo()
+AddInfijoPostfijo()
+agregarArbol()
+
+
+#Existe?
 RealcionarIDS()
 Estadefinido()
-agregarArbol()
-#Imprimirtabla()
+Agregartipo()
 Expresionsemantica()
-print('uwu')
+AddArbolsem()
 
 
 
 
-
-
-        
-                    
+### Impresiones
+#Imprimirtabla()
+Imprsem()
+               
 
                         
                 
