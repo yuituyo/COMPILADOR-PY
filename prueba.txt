@@ -3,7 +3,7 @@ int a = 0 ;
 read ( b ) ;
 read ( a ) ;
 print ( a ) ;
-write  ( b ) ;
+print  ( b ) ;
 while ( a > b )
 {
 

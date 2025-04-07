@@ -18,7 +18,7 @@ pasos = 0
 
 #Lee textod e un archivo y lo divide
 #--------------------------------------------------------------------------------------------------
-f = open("compilar.txt","r")
+f = open("prueba.txt","r")
 
 leido = f.read()
 
@@ -748,7 +748,6 @@ def construir_arbol_desde_prefijo(expresion_prefija):
     
     return construir_recursivo() 
 
-
 def comprobar_tipos(raiz):
     """
     Comprueba los tipos en el árbol de expresiones y asigna tipos a los nodos internos
@@ -798,7 +797,6 @@ def comprobar_tipos(raiz):
 
     return raiz.tipo  
 
- 
 def AddArbolsem():
     for i in range(len(tablita)):
         if(tablita[i].expsemantica != None):
@@ -807,10 +805,6 @@ def AddArbolsem():
                 tablita[i].arbseman = construir_arbol_desde_prefijo(tablita[i].expsemantica)
                 tablita[i].tipo = comprobar_tipos(tablita[i].arbseman)
             
-            
-    
-
-
 def Imprsem():
     for i in range(len(tablita)):
         if(tablita[i].tipodato != None):
@@ -822,6 +816,18 @@ def Imprsem():
             print(tablita[i].expsemantica)
             print("---------------")
 
+def Checarwhile():
+    for i in range(len(tablita)):
+        
+        if(tablita[i].lexema == 'while' or tablita[i].lexema == 'if'):
+            
+            var1 = tablita[i+2]
+            var2 = tablita[i+4]
+            
+            if(var1.tipodato != var2.tipodato):
+                print("Las variables son de tipos diferentes no se puede realizar la comparacion:  -",var1.tipodato,"-   -",var2.tipodato,"-")
+                sys.exit()
+            
                             
 #-------------------------------------------------------------------------------------------------- 
 
@@ -838,6 +844,8 @@ Agregartipo()
 Expresionsemantica()
 AddArbolsem()
 
+#Comparaciones
+Checarwhile()
 
 
 
