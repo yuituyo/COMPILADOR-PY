@@ -610,14 +610,27 @@ def BusquedaReversaTipo(tabla, pos):
             return temp[i].tipo
     
     return None    
-
+ 
+    #Se asignan los datos al momento de la declaracion
 def AgregarTipodec():
 
-    #for i in range(len(tablita)):
-        #if(tablita)
-    None
+    for i in range(len(tablita)):
+        
+        #Checan si es decimal desde la declaracion
+        if(tablita[i].tipo == 'decimal' and tablita[i-2].tipo == 'ID' and tablita[i+1] == ';'):
+            tablita[i].tipodato = 'float'
+            continue
+        
+        if(tablita[i].tipo == 'NUM' and tablita[i-2].tipo == 'ID' and tablita[i-3].tipo == 'float' and tablita[i+1].tipo == ';'):
+            tablita[i].tipodato = 'float'
+            continue
+        
+        if(tablita[i].tipo == 'NUM' and tablita[i-1].tipo == '=' and tablita[i+1].tipo == ';'):
+            tablita[i].tipodato = 'int'
+            continue            
+    
 
-#
+
 #Definir un metodo para asignar solamente cuando se declaran basicamente
     
 
@@ -881,6 +894,7 @@ def Checarwhile():
 AgregarExpresionesatabla()
 AddInfijoPostfijo()
 agregarArbol()
+AgregarTipodec()
 
 
 #Existe?
