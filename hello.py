@@ -583,6 +583,7 @@ def RealcionarIDS():
                 if(tablita[i].tipo == 'ID' and tablita[i].expresiones == None and tablita[posicionID].lexema == tablita[i].lexema):
                     
                     tablita[i].expresiones = expresionTemp
+
                     
                 if(tablita[i].expresiones != None and tablita[posicionID].lexema == tablita[i].lexema):
                     break
@@ -594,38 +595,69 @@ def Estadefinido():
             sys.exit()              
 
 
+def BusquedaReversaTipo(tabla, pos):
+    
+    temp = []
+    
+    for i in range(pos):
+        temp.append(tablita[i])
+    
+    temp.reverse()
+    
+    for i in range(len(temp)):
+        
+        if(temp[i].lexema == tabla.lexema):
+            return temp[i].tipo
+    
+    return None    
+
+def AgregarTipodec():
+
+    #for i in range(len(tablita)):
+        #if(tablita)
+    None
+
+#
+#Definir un metodo para asignar solamente cuando se declaran basicamente
+    
+
 def Agregartipo():
     for i in range(len(tablita)):
          
         if(tablita[i].tipo == 'ID' ):
              
-            if(tablita[i-1].tipo == 'int'):
+            if(tablita[i-2].tipo == 'int'):
                 
                 tablita[i].tipodato = 'int'
                 continue
                 
-            elif(tablita[i-1].tipo == 'float'):
+            elif(tablita[i-2].tipo == 'float'):
                 
                 tablita[i].tipodato = 'float'
                 continue
         
-        dentro = tablita[i].expresiones
-        if(tablita[i].expresiones != None):
-            if(len(dentro) == 1 ):
-                
-                token = tablita[i].expresiones[0]
-                
-                try:
-                    int(token)
-                    tablita[i].tipodato = 'int'
-                    continue
-                except ValueError:
+            dentro = tablita[i].expresiones
+            if(tablita[i].expresiones != None):
+                if(len(dentro) == 1 ):
+                    
+                    token = tablita[i].expresiones[0]
+                    
+                    res = BusquedaReversaTipo(tablita[i], tablita[i].pos + 1)
+                    if(res !=None):
+                        tablita[i].tipodato = res
+                        continue
+                    
                     try:
-                        float(token)
-                        tablita[i].tipodato = 'float'
+                        int(token)
+                        tablita[i].tipodato = 'int'
                         continue
                     except ValueError:
-                        raise ValueError(f"Valor no reconocido: {token}")
+                        try:
+                            float(token)
+                            tablita[i].tipodato = 'float'
+                            continue
+                        except ValueError:
+                            raise ValueError(f"Valor no reconocido: {token}")
                         
 class Nodo:
     """Clase que representa un nodo en el árbol de expresiones"""
@@ -703,7 +735,14 @@ def Expresionsemantica():
     for i in range(len(tablita)):
             if(tablita[i].expresiones != None ):
                 
+                
+                
                 exp = list(tablita[i].expresiones)
+                
+                #Caso donde sea solo uno
+                if(len(exp) < 1 and tablita[i].tipo == 'int' or tablita[i].tipo == 'float'):
+                    exp[0] = tablita[i].tipodato     
+                
                 
                 posi = tablita[i].pos + len(exp) + 2
                 
@@ -849,15 +888,15 @@ RealcionarIDS()
 Estadefinido()
 Agregartipo()
 Expresionsemantica()
+
 #AddArbolsem()
 
-#Comparaciones
 Checarwhile()
 
 
 
 ### Impresiones
-#Imprimirtabla()
+Imprimirtabla()
 #Imprsem()
                
 
