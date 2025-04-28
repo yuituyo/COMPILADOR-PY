@@ -577,23 +577,44 @@ def RealcionarIDS():
             
             posicionID = tablita[i].pos
             expresionTemp = tablita[i].expresiones
+            tipoTemp = tablita[i].tipodato
             
-            for i in range(posicionID + 1 ,len(tablita)):
+            for i2 in range(posicionID + 1 ,len(tablita)):
                 
-                if(tablita[i].tipo == 'ID' and tablita[i].expresiones == None and tablita[posicionID].lexema == tablita[i].lexema):
+                if(tablita[i2].tipo == 'ID' and tablita[i2].expresiones == None and tablita[posicionID].lexema == tablita[i2].lexema):
                     
-                    tablita[i].expresiones = expresionTemp
+                    tablita[i2].expresiones = expresionTemp
+                    tablita[i2].tipodato = tipoTemp
 
                     
-                if(tablita[i].expresiones != None and tablita[posicionID].lexema == tablita[i].lexema):
+                if(tablita[i2].expresiones != None and tablita[posicionID].lexema == tablita[i2].lexema):
                     break
 
 def Estadefinido():
     for i in range(len(tablita)):
-        if(tablita[i].expresiones == None and tablita[i].tipo == 'ID'): 
-            print("El ID: " + tablita[i].lexema + " no esta definido")
-            sys.exit()              
-
+        if(tablita[i].tipo == 'ID'):
+            if(tablita[i-1].lexema != 'int' and tablita[i-1].lexema != 'float'):
+            
+                encontrado = False
+                
+                temp = []
+        
+                for i2 in range(i):
+                    temp.append(tablita[i2])
+        
+                temp.reverse()
+                
+                for i3 in range(len(temp)):
+                    if(temp[i3].tipo == 'ID'): 
+                        if(temp[i3].lexema == tablita[i].lexema):
+                            encontrado = True
+                            break
+                
+                if(encontrado != True):
+                    print(tablita[i].lexema,'    no esta definido')
+                    sys.exit()
+            
+            
 
 def BusquedaReversaTipo(tabla, pos):
     
@@ -607,7 +628,7 @@ def BusquedaReversaTipo(tabla, pos):
     for i in range(len(temp)):
         
         if(temp[i].lexema == tabla.lexema):
-            return temp[i].tipo
+            return temp[i].tipodato
     
     return None    
  
@@ -619,14 +640,17 @@ def AgregarTipodec():
         #Checan si es decimal desde la declaracion
         if(tablita[i].tipo == 'decimal' and tablita[i-2].tipo == 'ID' and tablita[i+1] == ';'):
             tablita[i].tipodato = 'float'
+            tablita[i-2].tipodato = 'float'
             continue
         
         if(tablita[i].tipo == 'NUM' and tablita[i-2].tipo == 'ID' and tablita[i-3].tipo == 'float' and tablita[i+1].tipo == ';'):
             tablita[i].tipodato = 'float'
+            tablita[i-2].tipodato = "float"
             continue
         
         if(tablita[i].tipo == 'NUM' and tablita[i-1].tipo == '=' and tablita[i+1].tipo == ';'):
             tablita[i].tipodato = 'int'
+            tablita[i-2].tipodato = 'int'
             continue            
     
 
@@ -730,6 +754,13 @@ def BuscarTipo(lexema, pos):
 
     tablitaB.reverse()
     
+    
+    
+    for i2 in range(len(tablitaB)):
+        if (tablitaB[i2].lexema == lexema and tablitaB[i2].tipodato != None ):
+            return tablitaB[i2].tipodato
+
+    
     try:
         int(lexema) 
         return 'int'
@@ -739,7 +770,7 @@ def BuscarTipo(lexema, pos):
             return 'float'
         except ValueError:
             for i in range(pos):
-                #checar buscar tipo al momento de  buscar el pos 47
+               
                 if(tablitaB[i].lexema == lexema ):
                     return tablitaB[i].tipodato
            
@@ -753,28 +784,39 @@ def Expresionsemantica():
                 exp = list(tablita[i].expresiones)
                 
                 #Caso donde sea solo uno
-                if(len(exp) < 1 and tablita[i].tipo == 'int' or tablita[i].tipo == 'float'):
-                    exp[0] = tablita[i].tipodato     
+                if(len(exp) < 2 and tablita[i].tipodato == 'int' or tablita[i].tipodato == 'float'):
+                    exp[0] = tablita[i].tipodato
+                    tablita[i].expsemantica = exp
+                    continue     
                 
                 
-                posi = tablita[i].pos + len(exp) + 2
+                posi = tablita[i].pos 
                 
                 # Determinar si es int o float
                                 
                 for i2 in range(len(exp)):
-                  if(exp[i2] not in '+-*/^'):
-                      exp[i2]= BuscarTipo(exp[i2],posi)
+                    if(exp[i2] not in '+-*/^'):
+                        exp[i2]= BuscarTipo(exp[i2],posi)
                       
-                      if (exp[i2] == 'NUM'):
-                        exp[i2] = 'int'
-                      
-                      if(exp[i2] == 'decimal'):
-                          exp[i2] = 'float'
+                        try:
+                            int(exp[i2]) 
+                            exp[i2] = 'int'
+                        except:
+                            try:
+                                float(exp[i2]) 
+                                exp[i2] = 'float'
+                            except:
+                                pass
                 
                 tablita[i].expsemantica = exp
+                tablita[i].arbseman = construir_arbol_desde_prefijo(tablita[i].expsemantica)
+                tablita[i].tipodato = comprobar_tipos(tablita[i].arbseman)
                 
             else:
                 continue
+ 
+
+ 
  
 def construir_arbol_desde_prefijo(expresion_prefija):
     """Construye el árbol desde notación prefija (igual que antes)"""
@@ -862,11 +904,11 @@ def AddArbolsem():
             lon = len(tablita[i].expsemantica)
             if ( lon > 1 ):
                 tablita[i].arbseman = construir_arbol_desde_prefijo(tablita[i].expsemantica)
-                tablita[i].tipo = comprobar_tipos(tablita[i].arbseman)
+                tablita[i].tipodato = comprobar_tipos(tablita[i].arbseman)
             
 def Imprsem():
     for i in range(len(tablita)):
-        if(tablita[i].tipodato != None):
+        if(tablita[i].expsemantica != None):
             print(tablita[i].pos)
             print(tablita[i].lexema)
             print(tablita[i].tipo)
@@ -879,6 +921,18 @@ def Checarwhile():
     for i in range(len(tablita)):
         
         if(tablita[i].lexema == 'while' or tablita[i].lexema == 'if'):
+            
+            if(tablita[i+4].tipo == 'NUM'):
+                tablita[i+4] == 'int'
+            elif(tablita[i+4].tipo == 'decimal'):
+                tablita[i+4] == 'float'
+            
+            if(tablita[i+2].tipo == 'NUM'):
+                tablita[i+2] == 'int'
+            elif(tablita[i+2].tipo == 'decimal'):
+                tablita[i+2] == 'float'
+            
+            
             
             var1 = tablita[i+2]
             var2 = tablita[i+4]
@@ -905,12 +959,12 @@ Expresionsemantica()
 
 #AddArbolsem()
 
-Checarwhile()
+#Checarwhile()
 
 
 
 ### Impresiones
-Imprimirtabla()
+#Imprimirtabla()
 #Imprsem()
                
 
