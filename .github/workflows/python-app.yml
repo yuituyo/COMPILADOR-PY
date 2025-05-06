@@ -1,0 +1,55 @@
+name: Python CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'  # Versión que necesites
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov
+        pip install pylint black flake8  # Herramientas de calidad
+        
+    - name: Run linting (Pylint)
+      run: |
+        pylint src/ --exit-zero > pylint-report.txt
+        
+    - name: Run linting (Flake8)
+      run: |
+        flake8 src/ --exit-zero > flake8-report.txt
+        
+    - name: Run formatting check (Black)
+      run: |
+        black --check src/
+        
+    - name: Run tests with coverage
+      run: |
+        pytest --cov=./ --cov-report=xml tests/
+        
+    - name: Upload coverage to Codecov (opcional)
+      uses: codecov/codecov-action@v3
+      if: success()
+      
+    - name: Upload artifacts (opcional)
+      uses: actions/upload-artifact@v3
+      with:
+        name: reports
+        path: |
+          pylint-report.txt
+          flake8-report.txt
+          coverage.xml
