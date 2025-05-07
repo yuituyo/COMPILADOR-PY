@@ -1,0 +1,14 @@
+int a = 10 ;
+int a1 = 12 ;
+float x = 2.13 ;
+while ( a != x )
+{
+    print ( "11-fawdadadawqrfqfqf--1" ) ;   
+    int efe = a + a1 + 3 ;
+}
+if ( a == a1 )
+{ 
+    int z = 1 ;
+    int bb = a + x ;
+}
+int z = 1 ;
