@@ -18,7 +18,7 @@ pasos = 0
 
 #Lee textod e un archivo y lo divide
 #--------------------------------------------------------------------------------------------------
-f = open("prueba.txt","r")
+f = open("src\\prueba.txt","r")
 
 leido = f.read()
 
