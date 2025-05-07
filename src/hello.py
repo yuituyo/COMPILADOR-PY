@@ -1086,3 +1086,8 @@ Expresionsemantica()
 ### Impresiones
 # Imprimirtabla()
 # Imprsem()
+
+
+#--------------------------------------------------------------------------------------------------------
+#Generacion intermedio/ensamblador
+
