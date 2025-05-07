@@ -1,0 +1,12 @@
+[tool.black]
+line-length = 88          # Mismo que en Flake8 para consistencia
+target-version = ['py311'] # Versión de Python objetivo
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | __pycache__
+  | build
+  | dist
+)/
+'''
