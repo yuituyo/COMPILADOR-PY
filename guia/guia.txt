@@ -1,0 +1,2 @@
+; Ensamblar: nasm -f win32 resta_simple.asm -o resta_simple.obj
+; Enlazar: gcc resta_simple.obj -o resta_simple.exe
