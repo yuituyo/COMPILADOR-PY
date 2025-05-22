@@ -1,0 +1,9 @@
+global_start
+
+
+asignacion
+MOV valor,direccion
+
+
+lectura
+str time times 100 db 0

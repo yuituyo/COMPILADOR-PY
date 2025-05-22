@@ -1,0 +1,31 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "NASM Compile (Win64)",
+            "type": "shell",
+            "command": "nasm -f win64 ${file} -o ${fileDirname}\\${fileBasenameNoExtension}.obj",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Link (Win64)",
+            "type": "shell",
+            "command": "golink /entry:Start ${fileDirname}\\${fileBasenameNoExtension}.obj kernel32.dll",
+            "dependsOn": ["NASM Compile (Win64)"],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Build and Run (Win64)",
+            "type": "shell",
+            "command": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+            "dependsOn": ["Link (Win64)"],
+            "group": "test",
+            "problemMatcher": []
+        }
+    ]
+}
